@@ -61,7 +61,6 @@ const renderCategories = (categories) => {
     categories.forEach(element => renderCategory(element));
 }
 
-
 const renderCategory = (category) => {
     const h4 = document.createElement("h4")
     const a = document.createElement("a")
@@ -81,7 +80,6 @@ const renderProducts = (e, category) => {
         lis.forEach((li) => li.remove())
     } else {
         category.products.forEach(element => renderProduct(element, category.id));
-
     }
 
 }
@@ -124,8 +122,6 @@ const handleSubmit = (e) => {
 }
 
 const handleCreateProduct = (product) => {
-    //make sure the categories are on the page
-    //make sure the new product will end up on the page
     ul().children.length < 1 ? handleClick() : renderProduct(product, product.category.id)
     productForm().reset()
 }
@@ -146,19 +142,19 @@ const handleDelete = (e) => {
 
 const handleUpdate = (e) => {
     if (e.target.innerText === "Edit") {
-        // step 1 replace current li with a new one containing inputs and map values
-        // step 2 button will change from edit to update
+        // replace current li with a new one containing inputs and map values
+        // Button will now say Update not Edit
         const prodId = e.target.dataset.id
         const name = e.target.parentElement.querySelector(".product-name").innerText
         const price = e.target.parentElement.querySelector(".product-price").innerText
         const description = e.target.parentElement.querySelector(".product-description").innerText
         e.target.parentElement.innerHTML = `
-            <label for="product-name">Name:</label><br>
-            <input type="text" name="name" id="product-name" value="${name}"><br><br>
-            <label for="product-description">Description:</label><br>
-            <input type="text" name="description" id="product-description" value="${description}"><br><br>
-            <label for="product-price">Price:</label><br>
-            <input type="number" name="price" id="product-price" min="0" step=".01" value="${price}"><br><br>
+            <label for="product-name">Name:</label>
+            <input type="text" name="name" id="product-name" value="${name}"><br>
+            <label for="product-description">Description:</label>
+            <input type="text" name="description" id="product-description" value="${description}"><br>
+            <label for="product-price">Price:</label>
+            <input type="number" name="price" id="product-price" min="0" step=".01" value="${price}"><br>
             <button class="update-product" data-id="${prodId}">Update</button>
             <button class="delete-product" data-id="${prodId}">Delete</button>
         `
@@ -171,10 +167,6 @@ const handleUpdate = (e) => {
 }
 
 const handleFetchUpdate = (e) => {
-    // const prodId = e.target.dataset.id
-    // const name =  e.target.parentElement.querySelector("#product-name").value
-    // const price = e.target.parentElement.querySelector("#product-price").value
-    // const description = e.target.parentElement.querySelector("#product-description").value
     const data = {
         id: e.target.dataset.id,
         name: e.target.parentElement.querySelector("#product-name").value,
@@ -189,7 +181,7 @@ const handleFetchUpdate = (e) => {
         },
         body: JSON.stringify(data)
     })
-    .then(resp => {resp.json()})
+    .then(resp => resp.json())
     .then(json => replaceElement(json, e.target.parentElement))
     .catch(err => alert(err))
 }
@@ -207,6 +199,7 @@ const replaceElement = (product, li) => {
     document.querySelector(`button.delete-product[data-id='${product.id}']`).addEventListener("click", handleDelete)
     document.querySelector(`button.edit-product[data-id='${product.id}']`).addEventListener("click", handleUpdate)
 }
+
 
 const handleError = (error) => {
     console.log(error)
