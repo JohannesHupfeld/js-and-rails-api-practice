@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
     buttonShow().addEventListener("click", handleClick)
     buttonNew().addEventListener("click", displayForm)
@@ -6,10 +5,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const handleClick = (e) => {
     if (ul().children.length < 1) {
-        fetch('http://localhost:3000/categories')
-        .then(resp => resp.json())
-        .then(json => renderCategories(json))
-        .catch(handleError)
+        CategoryApi.fetchCategories()
+        Category.render()
+        // *** MOVED TO categoryApi.js and replaced with above code
+        // fetch('http://localhost:3000/categories') 
+        // .then(resp => resp.json())
+        // .then(json => renderCategories(json))
+        // .catch(handleError)
     } else {
         ul().innerHTML = ""
     }
@@ -46,21 +48,21 @@ const fetchCategoriesForSelect = () => {
             .then(collection => document.querySelector("select#category_id").innerHTML = collection.join(" "))
 }
 
-const renderCategories = (categories) => {
-    ul().innerHTML += "<h1 id='categories-header'>Categories</h1>"
-    categories.forEach(element => renderCategory(element));
-}
+// const renderCategories = (categories) => {  // moved to category.js -- static render
+//     ul().innerHTML += "<h1 id='categories-header'>Categories</h1>"
+//     categories.forEach(element => renderCategory(element));
+// }
 
-const renderCategory = (category) => {
-    const h4 = document.createElement("h4")
-    const a = document.createElement("a")
-    a.id = `category-${category.id}`
-    a.innerText = category.name
-    a.href = "#"
-    a.addEventListener("click", (e) => renderProducts(e, category))
-    h4.appendChild(a)
-    ul().appendChild(h4)
-}
+// const renderCategory = (category) => {       // moved to category.js
+//     const h4 = document.createElement("h4")
+//     const a = document.createElement("a")
+//     a.id = `category-${category.id}`
+//     a.innerText = category.name
+//     a.href = "#"
+//     a.addEventListener("click", (e) => renderProducts(e, category))
+//     h4.appendChild(a)
+//     ul().appendChild(h4)
+// }
 
 const renderProducts = (e, category) => {
     const nextLiSibling = e.target.nextSibling
