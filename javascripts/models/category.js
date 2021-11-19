@@ -1,50 +1,72 @@
 class Category {
-  static all =[]
+  static all = []
+  static dropDownOptions = []
 
-  constructor({name, id, products =[]}) { // blue curly brackets = destructing; I receive an object that has keys of name, id, and products and want to make variables out of it
-    this.name = name
-    this.id = id
-    this.products = products
-    Category.all.push(this) // all is a class property so category is attached 
+  constructor({name, id, products = []}){
+      this.name = name
+      this.id = id
+      // this.products = products
+      Category.all.push(this)
   }
 
-  static getAll() {  //getAll is a class property so it requires static
-    return this.all
+  static getAll() {
+      return this.all
   }
-
   static findByName(name) {
-    // return this.all.find(function(category) {category.name === name}) //ES5
-    return this.all.find(category => category.name === name) // ES6
+     return this.all.find(function(category) { category.name === name})
   }
-
-  static findByid(id) {
-    return this.all.find(category => category.id === id)
+  static findById(id) {
+      return this.all.find(category => category.id === id)
   }
-
   static findOrCreateBy(categoryObj) {
-    return this.findByName(categoryObj.name) || new Category(categoryObj) // to use new we need the whole object not just name otherwise it get instantiated without a product property or id, therefore we destructured the constructor
+      return this.findByName(categoryObj.name) || new Category(categoryObj)
   }
 
-  static render() {
-    ul().innerHTML += "<h1 id='categories-header'>Categories</h1>"
-    this.all.forEach(cat => this.renderCategory(cat))
+  getProducts() {
+      return Product.all.filter(product => this.id === product.category_id )
   }
 
-  static renderCategory(category) {
-    debugger
-    const h4 = document.createElement("h4")
-    const a = document.createElement("a")
-    a.id = `category-${category.id}`
-    a.innerText = category.name
-    a.href = "#"
-    a.addEventListener("click", (e) => renderProducts(e, category))
-    h4.appendChild(a)
-    ul().appendChild(h4)
+  addToDropDown() {
+    const option = document.createElement("option")
+    option.value = this.id
+    option.innerText = this.name
+    Category.dropDownOptions.push(option )
+  } 
+
+  render() {
+      const h4 = document.createElement("h4")
+      const a = document.createElement("a")
+      a.id = `category-${this.id}`
+      a.innerText = this.name
+      a.href = "#"
+      a.addEventListener("click", this.renderProducts)
+      h4.appendChild(a)
+      ul().appendChild(h4)
   }
+
+  renderProducts = (e) => {
+    const nextLiSibling = e.target.nextSibling
+    if (nextLiSibling) {
+        const children = Array.from(e.target.parentNode.children)
+        const lis = children.slice(1)
+        lis.forEach((li) => li.remove())
+    } else {
+        this.getProducts().forEach(element => element.render());
+    }
+  }
+
+  // static renderCategory(category) {
+  //     const h4 = document.createElement("h4")
+  //     const a = document.createElement("a")
+  //     a.id = `category-${category.id}`
+  //     a.innerText = category.name
+  //     a.href = "#"
+  //     a.addEventListener("click", (e) => renderProducts(e, category))
+  //     h4.appendChild(a)
+  //     ul().appendChild(h4)
+  // }
 
   renderProducts(cat) {
-    return cat
+      return cat
   }
-
-
 }
